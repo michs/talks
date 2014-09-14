@@ -126,8 +126,7 @@ make a.out
 # Instrument the program and execute a first run
 pat_build a.out
 aprun -n 20 -N 10 ./a.out+pat
-# Find the collected data and process with pat_report
-ls -ltr *.xf
+# The name of the file with collected data is given in the program output
 pat_report a.out+pat+135731-8s.xf | tee info-135731.txt
 ```
 * Sampling based report in <tt>info-135731.txt</tt>
@@ -141,8 +140,7 @@ pat_report a.out+pat+135731-8s.xf | tee info-135731.txt
 # Re-build for tracing analysis and re-run the program
 pat_build -O a.out+pat+135731-8s.apa
 aprun -n 20 -N 10 ./a.out+apa
-# Find the collected data and process with pat_report
-ls -ltr
+# The name of the file with collected data is given in the program output
 pat_report a.out+apa+135732-8t.xf | tee info-135732.txt
 ```
 * Tracing based report in <tt>info-135732.txt</tt>
@@ -156,7 +154,6 @@ cp MPICH_RANK_ORDER.USER_Time MPICH_RANK_ORDER
 export MPICH_RANK_REORDER_METHOD=3
 aprun -n 20 -N 10 ./a.out+apa
 unset MPICH_RANK_REORDER_METHOD
-ls -ltr *.xf
 pat_report a.out+apa+135793-100t.xf | tee info-135793.txt
 ```
 ---
