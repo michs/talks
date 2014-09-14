@@ -16,7 +16,7 @@
         font-weight: 400;
         margin-bottom: 0;
       }
-      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h1 { font-size: 2.5em; }
       .remark-slide-content h2 { font-size: 2em; }
       .remark-slide-content h3 { font-size: 1.6em; }
       .footnote {
@@ -108,8 +108,8 @@
         height: 92%;
         float: left;
       }
-      .left-column h1 { font-size: 2.2em; }
-      .left-column h2 { font-size: 1.7em; }
+      .left-column h1 { font-size: 2.1em; }
+      .left-column h2 { font-size: 1.6em; }
       .left-column h3 { font-size: 1.2em; }
 
       .left-column h2:last-of-type, .left-column h3:last-child {
@@ -141,7 +141,9 @@
 
       var slideshow = remark.create({sourceUrl: querystring('name'),
                                      highlightStyle: 'default',
-                                     ratio: '4:3'});
+                                     highlightLanguage: 'remark',
+                                     ratio: '4:3',
+                                     navigation: {click: false} });
     </script>
   </body>
 </html>
