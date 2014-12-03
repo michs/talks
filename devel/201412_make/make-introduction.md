@@ -62,8 +62,6 @@ target: dependencies ...
         commands
         ...
 </pre>
-<p>&nbsp;</p>
-<small>Indent commands with <TAB> characters
 </td>
 <td><img src="purpose_make_large2.png" width="115%"/></td>
 </tr></table>
@@ -93,6 +91,7 @@ And more tools:<br/>[http://en.wikipedia.org/wiki/List_of_build_automation_softw
 >     target: dependencies ...
 >            commands
 >            ...
+   * Indent commands with &lt;TAB&gt; characters
 * Save rules in a file, default names are **Makefile**, **makefle**, **GNUmakefile**.
 * Activate make and specifyes desired targets to build as parameters
 ```bash
@@ -135,6 +134,7 @@ $ gcc -o hello main.c func.c
 ---
 ## Makefile 1
 
+Replace manually issued commands
 ```make
 hello : main.c func.c func.h
     gcc -I. -o hello main.c func.c
@@ -148,6 +148,8 @@ gcc -I. -o hello main.c func.c
 * Change of any file in the prerequisites will trigger rebuilt
 ---
 ## Makefile 2
+
+Increase flexibility of definitions
 ```make
 CC = gcc
 CFLAGS = -I.
@@ -167,6 +169,7 @@ gcc -I. -o hello main.o func.o
 ---
 ## Makefile 3
 
+Improve build process
 ```make
 CC = gcc
 CFLAGS = -I.
@@ -192,13 +195,16 @@ gcc -I. -o hello main.o func.o
 * The special macro `$@` specifies the current target, `$<` selects the first prerequisite
 ---
 ## Makefile 4
+Complete parametrisation
 ```make
 CC = gcc
 CFLAGS = -I.
+
 HEADERS = func.h
 OBJ = hello.o func.o
+APP = hello
 
-hello : $(OBJ)
+$(APP) : $(OBJ)
     $(CC) $(CFLAGS) -o $@ $^
 
 %.o : %.c $(HEADERS)
@@ -217,21 +223,24 @@ gcc -I. -o hello main.o func.o
 ---
 ## Makefile 5
 
+Extension for bigger projects
 ```make
 INCDIR = ../include
 LIBDIR = ../lib
 OBJDIR = obj
 
+HEADERS_LIST = func.h
+OBJ_LIST = main.o func.o
+APP = hello
+
 CC = gcc
 CFLAGS = -I$(INCDIR)
 LIBS = -lm
 
-HEADERS_LIST := func.h
 HEADERS = $(patsubst %,$(INCDIR)/%,$(HEADERS_LIST))
-OBJ_LIST = main.o func.o
-OBJ := $(patsubst %,$(OBJDIR)/%,$(OBJ_LIST))
+OBJ = $(patsubst %,$(OBJDIR)/%,$(OBJ_LIST))
 
-hello : $(OBJ)
+$(APP) : $(OBJ)
         $(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 $(OBJDIR)/%.o : %.c $(HEADERS)
@@ -240,7 +249,8 @@ $(OBJDIR)/%.o : %.c $(HEADERS)
 .PHONY: clean
 
 clean :
-        rm -f $(OBJDIR)/*.o *~ core $(INCDIR)/*~
+        rm -f $(APP) $(OBJDIR)/*.o
+        rm -f *~ core $(INCDIR)/*~
 ```
 
 ---
@@ -258,10 +268,66 @@ gcc -I../include -o hello obj/main.o obj/func.o -lm
 * Source, header and object files in different directories
 ---
 ## Flexible makefiles
+* Conditions: `ifdef NAME`, `ifndef NAME`, `ifeq NAME`, `ifneq NAME`
+  * Eample for conditional definitions
+```
+ifeq ($(CC),gcc)
+    # ...
+else
+    # ...
+endif
+```
+* Further possibilities
+  * Function calls: processing of strings, paths; own functions
+  * Calls to the shell
+  * Iteration through lists
+  * Issue messages for the user
 
 ---
 ## Makefiles in large projects
 
+* Use of recursive makefiles is one approach
+
+```make
+sub :
+    cd subdir && $(MAKE)
+```
+
+* Include other makefiles
+
+```make
+include FILE-NAME
+```
+
+* More sophisticated rules, f.ex. use of the normal C compiler and the MPI C compiler
+
+```bash
+%.mpi.o : %.mpi.c
+  $(MPICC) -c $(CFLAGS) $(INCLUDES)  -o $@  $< 
+
+%.o : %.c
+  $(CC) -c $(CFLAGS) -o $@  $<
+```
+---
+## Organise a development environment for multiple systems
+
+* Layered organsiation:  User - Project - Component - ...
+* Define environment at appropriate level, unify over different systems outside of makefiles if possible
+  * User environment: .profile, .bashrc, own scripts
+  * Project-wide settings: *setenv* script
+  * Component definitions: Makefile
+
+* Shell scripts are the flexible
+```bash
+# .bashrc
+source ~/mydefinitions.sh
+```
+```bash
+# interactive use
+source setenv.sh
+```
+* Invent useful variables, f.ex. `CLUSTER=lindgren` or `CLUSTER=ferlin`
+* Document the environment in a README file
 ---
 ### Further Reading
 
