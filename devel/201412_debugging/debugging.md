@@ -167,4 +167,4 @@ Reading symbols for shared libraries .. done
 (gdb)
 ```
 
-URL of the source code: 
+Source code: [queue.c](queue.c)
